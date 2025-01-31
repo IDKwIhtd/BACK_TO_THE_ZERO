@@ -9,9 +9,6 @@ def index(request):
 def index2(request):
     return render(request, 'index2.html')
 
-def users(request):
-    return render(request, 'users.html')
-
 def hello(request):
     name = "BIBI"
     tags = ['python', 'django', 'git']
@@ -30,3 +27,4 @@ def data_catch(request):
         "data" : message,
     }
     return render(request, 'data_catch.html', context)
+
