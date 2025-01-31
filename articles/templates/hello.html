@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}HI, AGAIN{% endblock %}
+
+{% block content %}
+    <h1>Hello, STRANGER</h1>
+    <h2>I'm {{ name }}</h2>
+    <p>My First Tag : {{ tags.0 }}</p>
+    <p>My All Tags : {{ tags|join:", "}}</p>
+    <p>My Tech : {{ techs.backend }}</p>
+    <p>My last study</p>
+    <ul>
+        {% for tech in techs.items %}
+        <li>{{tech.0}} - {{tech.1}}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
