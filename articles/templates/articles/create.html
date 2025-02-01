@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %} NEW {%endblock %}
+{%block content %}
+<h1>새 글 작 성</h1>
+
+<form action="{%url 'articles:create' %}" method="POST">
+    {% csrf_token %}
+  {{ form.as_p }}<br><br>
+
+<a href="{% url 'articles:articles' %}">취소</a><br>
+<button type="submit">저장</button>
+
+</form>
+
+
+
+{%endblock content%}

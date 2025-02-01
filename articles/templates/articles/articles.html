@@ -2,11 +2,11 @@
 {%block title%}Articles{%endblock%}
 {%block content%}
 <h1>Articles</h1>
-<a href="{%url 'new'%}">새 글 쓰기</a>
+<a href="{%url 'articles:create'%}">새 글 쓰기</a>
 
 <ul>
     {%for article in articles %}
-    <a href="{% url 'article_detail' article.id %}">
+    <a href="{% url 'articles:article_detail' article.id %}">
         <br>
         <div>{{article.id}} 
         {{article.title}}</div>
