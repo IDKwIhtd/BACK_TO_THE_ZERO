@@ -2,9 +2,12 @@
 
 {% block title %}THIS IS SECOND INDEX PAGE{% endblock %}
 
+{% load static %}
 {% block content %}
     <h1>THIS IS SECOND INDEX PAGE</h1>
     <p>My Second INDEX PAGE is working</p>
+
+    <img src="{% static 'articles/Neon_Drift_simple_compose.gif' %}" alt="">
 <ul>
     <li><a href="{% url 'articles:hello' %}">Hello</a></li>
     <li><a href="{% url 'users:hello' %}">USERS App의 Hello</a></li>
@@ -14,4 +17,4 @@
 
 
 
-{% endblock %}
+{% endblock content %}

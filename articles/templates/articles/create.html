@@ -3,7 +3,7 @@
 {%block content %}
 <h1>새 글 작 성</h1>
 
-<form action="{%url 'articles:create' %}" method="POST">
+<form action="{%url 'articles:create' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
   {{ form.as_p }}<br><br>
 

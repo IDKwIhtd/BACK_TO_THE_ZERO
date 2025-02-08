@@ -5,26 +5,29 @@ from .forms import ArticleForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 
+
 # Create your views here.
 @login_required
 def create(request):
     if request.method == "POST":
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
             article = form.save()
             return redirect("articles:article_detail", article.id)
     else:
         form = ArticleForm()
 
-    context = {"form":form}
+    context = {"form": form}
     return render(request, "articles/create.html", context)
+
 
 def article_detail(request, pk):
     article = Article.objects.get(pk=pk)
     context = {
-        "article" : article,
+        "article": article,
     }
     return render(request, "articles/article_detail.html", context)
+
 
 @login_required
 @require_http_methods(["GET", "POST"])
@@ -38,10 +41,11 @@ def update(request, pk):
     else:
         form = ArticleForm(instance=article)
         context = {
-            "form":form,
-            "article":article,
+            "form": form,
+            "article": article,
         }
         return render(request, "articles/update.html", context)
+
 
 @require_POST
 def delete(request, pk):
@@ -55,34 +59,38 @@ def index(request):
     response = HttpResponse("<h1>Hey, There!</h1>")
     return response
 
+
 def index2(request):
-    return render(request, 'articles/index2.html')
+    return render(request, "articles/index2.html")
+
 
 def hello(request):
     name = "BIBI"
-    tags = ['python', 'django', 'git']
-    techs = {'frontend': 'HTML, CSS, JS', 'backend': 'Python, Django, FASTAPI'}
-    context = {"name" : name,
-               "tags" : tags,
-               "techs" : techs}
-    return render(request, 'articles/hello.html', context)
+    tags = ["python", "django", "git"]
+    techs = {"frontend": "HTML, CSS, JS", "backend": "Python, Django, FASTAPI"}
+    context = {"name": name, "tags": tags, "techs": techs}
+    return render(request, "articles/hello.html", context)
+
 
 def data_throw(request):
-    return render(request, 'articles/data_throw.html')
+    return render(request, "articles/data_throw.html")
+
 
 def data_catch(request):
     message = request.GET.get("message")
     context = {
-        "data" : message,
+        "data": message,
     }
-    return render(request, 'articles/data_catch.html', context)
+    return render(request, "articles/data_catch.html", context)
+
 
 def articles(request):
     articles = Article.objects.all().order_by("-id")
     context = {
-        "articles":articles,
+        "articles": articles,
     }
-    return render(request, 'articles/articles.html', context)
+    return render(request, "articles/articles.html", context)
+
 
 # def create(request):
 #     if request.method =="POST":
@@ -149,4 +157,3 @@ def articles(request):
 #         "article" : article,
 #     }
 #     return render(request, "articles/article_detail.html", context)
-
