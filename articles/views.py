@@ -7,6 +7,21 @@ from django.views.decorators.http import require_http_methods, require_POST
 
 
 # Create your views here.
+
+
+def delete_image(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+
+    if request.methoe == "POST":
+        # 기존 이미지 삭제
+        if article.image:
+            article.image.delete()  # 이미지 파일 삭제
+            article.image = None  # DB에서도 삭제
+            article.save()
+
+    return redirect("articles:update", article.pk)  # 이미지 삭제 후, 수정 페이지로 이동
+
+
 @login_required
 def create(request):
     if request.method == "POST":

@@ -9,6 +9,19 @@
     <label for="title">제목</label>
     <input type="text" name="title" id="title" value={{article.title}}><br><br>
 
+    {% if article.image %}
+        <img src="{{ article.image.url }}"><br>
+        <from action ="{% url 'articles:delete_image' article.pk %}" methoe="POST">
+            {% csrf_token %}
+            <button type="submit">이미지 삭제</button>
+        </from>
+    {% endif %}
+    <br>
+
+    <!-- 새로운 이미지 업로드 -->
+     <label for="image">이미지선택</label>
+     <input type="file" name="image" id="image">
+
     <label for="content">내용</label>
     <textarea name="content" id ="content" cols="30" rows="10">{{ article.content }}</textarea><br></br>
 
