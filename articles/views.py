@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .models import Article
-from .forms import ArticleForm
+from .models import Article, Comment
+from .forms import ArticleForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
 
@@ -37,11 +37,23 @@ def create(request):
 
 
 def article_detail(request, pk):
-    article = Article.objects.get(pk=pk)
+    article = get_object_or_404(Article, pk=pk)
+    comment_form = CommentForm()
+    comments = article.comment_set.all()
     context = {
         "article": article,
+        "comment_form": comment_form,
+        "comments": comments,
     }
     return render(request, "articles/article_detail.html", context)
+
+
+# def article_detail(request, pk):
+#     article = Article.objects.get(pk=pk)
+#     context = {
+#         "article": article,
+#     }
+#     return render(request, "articles/article_detail.html", context)
 
 
 @login_required
@@ -172,3 +184,25 @@ def articles(request):
 #         "article" : article,
 #     }
 #     return render(request, "articles/article_detail.html", context)
+
+
+@require_POST
+@login_required
+def comment_create(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)  # DB에 저장 전에 객체 생성
+        comment.author = request.user  # 현재 로그인한 사용자 설정
+        comment.article = article
+        comment.save()
+    return redirect("articles:article_detail", pk=article.pk)
+
+
+@require_POST
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    article_pk = comment.article.pk
+    comment.delete()
+    return redirect("articles:article_detail", pk=article_pk)

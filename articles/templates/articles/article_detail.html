@@ -1,22 +1,41 @@
-{%extends 'base.html'%}
+{% extends 'base.html' %}
 
-{%block title%}ARTICLE_DETAIL{%endblock title%}
-{%block content%}
-<h2>{{article.title}}</h2><br>
+{% block title %}ARTICLE_DETAIL{% endblock title %}
+{% block content %}
+<h2>{{ article.title }}</h2><br>
 {% if article.image %}
     <img src="{{ article.image.url }}">
 {% endif %}
-<p>{{article.content}}</p><br>
-<p>작성일시 : {{article.created_at}}</p>
-<p>수정일시 : {{article.updated_at}}</p>
+<p>{{ article.content }}</p><br>
+<p>작성일시 : {{ article.created_at }}</p>
+<p>수정일시 : {{ article.updated_at }}</p>
 <br><br>
 
 <a href="{% url 'articles:articles' %}">ArticlesPage로 돌아갈래요</a>
 <br>
 <hr>
 <a href="{% url 'articles:update' article.pk %}"><button>수정</button></a>
-<form action="{%url 'articles:delete' article.pk %}" method = "POST">
+<form action="{% url 'articles:delete' article.pk %}" method="POST">
     {% csrf_token %}
     <input type="submit" value="글삭제">
 </form>
-{%endblock content%}
+<hr>
+<h3>댓글</h3>
+{% for comment in article.comment_set.all %}
+    <p>{{ comment.content }}</p>
+    <p>작성자: {{ comment.author }}</p>
+    <p>작성일시: {{ comment.created_at }}</p>
+    <form action="{% url 'articles:comment_delete' comment.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="댓글 삭제">
+    </form>
+    <hr>
+{% empty %}
+    <p>댓글이 없습니다.</p>
+{% endfor %}
+<form action="{% url 'articles:comment_create' article.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="댓글작성">
+</form>
+{% endblock content %}

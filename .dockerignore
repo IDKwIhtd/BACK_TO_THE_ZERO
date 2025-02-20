@@ -1,0 +1,30 @@
+# 가상 환경 및 패키지 폴더 제외
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+djangopj/
+
+# Git 관련 파일 제외
+.git/
+.gitignore
+
+# IDE 및 편집기 설정 파일 제외
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 로그 및 캐시 파일 제외
+*.log
+*.cache/
+*.egg-info/
+.env
+
+# Docker 빌드 캐시 및 임시 파일 제외
+docker-compose.override.yml
+.DS_Store
+
+db.sqlite3
