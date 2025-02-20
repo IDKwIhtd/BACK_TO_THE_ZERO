@@ -20,8 +20,16 @@
     <input type="submit" value="글삭제">
 </form>
 <hr>
-<h3>댓글</h3>
-{% for comment in article.comment_set.all %}
+
+<h3>댓글 {{ comments.count }}개</h3>
+
+<form action="{% url 'articles:comment_create' article.pk %}" method="POST">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="댓글 작성">
+</form>
+
+{% for comment in comments %}
     <p>{{ comment.content }}</p>
     <p>작성자: {{ comment.author }}</p>
     <p>작성일시: {{ comment.created_at }}</p>
@@ -33,9 +41,4 @@
 {% empty %}
     <p>댓글이 없습니다.</p>
 {% endfor %}
-<form action="{% url 'articles:comment_create' article.pk %}" method="POST">
-    {% csrf_token %}
-    {{ comment_form.as_p }}
-    <input type="submit" value="댓글작성">
-</form>
 {% endblock content %}

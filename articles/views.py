@@ -38,8 +38,10 @@ def create(request):
 
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
+    # 최신 댓글이 위로 오도록 정렬
+    comments = article.comment_set.all().order_by("-created_at")
+
     comment_form = CommentForm()
-    comments = article.comment_set.all()
     context = {
         "article": article,
         "comment_form": comment_form,
@@ -194,8 +196,8 @@ def comment_create(request, pk):
     if form.is_valid():
         comment = form.save(commit=False)  # DB에 저장 전에 객체 생성
         comment.author = request.user  # 현재 로그인한 사용자 설정
-        comment.article = article
-        comment.save()
+        comment.article = article  # article 필드 직접 할당
+        comment.save()  # 최종 저장
     return redirect("articles:article_detail", pk=article.pk)
 
 
