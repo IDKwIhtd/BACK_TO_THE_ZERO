@@ -3,6 +3,7 @@
 {% block title %}ARTICLE_DETAIL{% endblock title %}
 {% block content %}
 <h2>{{ article.title }}</h2><br>
+<p>작성자 : {{ article.author.username }}</p>
 {% if article.image %}
     <img src="{{ article.image.url }}">
 {% endif %}
@@ -14,11 +15,17 @@
 <a href="{% url 'articles:articles' %}">ArticlesPage로 돌아갈래요</a>
 <br>
 <hr>
+{% if article.author == request.user %}
 <a href="{% url 'articles:update' article.pk %}"><button>수정</button></a>
+{% endif %}
+<br>
+{% if article.author == request.user %}
+
 <form action="{% url 'articles:delete' article.pk %}" method="POST">
     {% csrf_token %}
     <input type="submit" value="글삭제">
 </form>
+{% endif %}
 <hr>
 
 <h3>댓글 {{ comments.count }}개</h3>
@@ -33,10 +40,12 @@
     <p>{{ comment.content }}</p>
     <p>작성자: {{ comment.author }}</p>
     <p>작성일시: {{ comment.created_at }}</p>
-    <form action="{% url 'articles:comment_delete' comment.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="댓글 삭제">
-    </form>
+    {% if comment.author == request.user %}
+        <form action="{% url 'articles:comment_delete' comment.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="댓글 삭제">
+        </form>
+    {% endif %}
     <hr>
 {% empty %}
     <p>댓글이 없습니다.</p>

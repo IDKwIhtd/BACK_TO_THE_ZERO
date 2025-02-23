@@ -4,6 +4,7 @@ from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
+from django.http import HttpResponseForbidden
 
 
 # Create your views here.
@@ -12,7 +13,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 def delete_image(request, pk):
     article = get_object_or_404(Article, pk=pk)
 
-    if request.methoe == "POST":
+    if request.method == "POST":
         # 기존 이미지 삭제
         if article.image:
             article.image.delete()  # 이미지 파일 삭제
@@ -27,7 +28,9 @@ def create(request):
     if request.method == "POST":
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
-            article = form.save()
+            article = form.save(commit=False)  # DB에 저장하지 않고 객체만 생성
+            article.author = request.user  # 작성자를 현재 로그인한 유저로 설정
+            article = form.save()  # DB에 저장
             return redirect("articles:article_detail", article.id)
     else:
         form = ArticleForm()
@@ -62,6 +65,10 @@ def article_detail(request, pk):
 @require_http_methods(["GET", "POST"])
 def update(request, pk):
     article = Article.objects.get(pk=pk)
+
+    if article.author != request.user:  # 작성자가 아니면 수정 불가
+        return HttpResponseForbidden("수정할 권한이 없습니다.")
+
     if request.method == "POST":
         form = ArticleForm(request.POST, instance=article)
         if form.is_valid():
@@ -80,7 +87,10 @@ def update(request, pk):
 def delete(request, pk):
     if request.user.is_authenticated:
         article = get_object_or_404(Article, pk=pk)
-        article.delete()
+        if article.author == request.user:
+            article.delete()
+        else:
+            return HttpResponseForbidden("이 게시글을 삭제할 권한이 없습니다.")
     return redirect("articles:articles")
 
 
@@ -206,5 +216,8 @@ def comment_create(request, pk):
 def comment_delete(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     article_pk = comment.article.pk
-    comment.delete()
+    if request.user == comment.author:
+        comment.delete()
+    else:
+        return HttpResponseForbidden("이 댓글을 삭제할 권한이 없습니다.")
     return redirect("articles:article_detail", pk=article_pk)

@@ -8,6 +8,7 @@ class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = "__all__"
+        exclude = ("author",)
         # exclude ["title"]
 
     # 앞은 데이터베이스에 저장될 값, 뒤는 사용자에게 보여질 값

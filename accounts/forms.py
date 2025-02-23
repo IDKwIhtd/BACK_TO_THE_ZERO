@@ -1,9 +1,10 @@
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django import forms
 
 
+# 회원정보 수정 폼
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = get_user_model()
@@ -26,3 +27,10 @@ class CustomUserChangeForm(UserChangeForm):
             # CSS를 활용해 필드 자체는 숨기지만 help_text는 남김
             self.fields["password"].widget.attrs["style"] = "display: none;"
             self.fields["password"].label = "비밀번호 변경"
+
+
+# 회원가입 폼
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = get_user_model()
+        fields = UserCreationForm.Meta.fields + ()
