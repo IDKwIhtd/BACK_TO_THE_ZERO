@@ -8,6 +8,19 @@ from django.http import HttpResponseForbidden
 
 
 # Create your views here.
+@require_POST
+def like(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("accounts:login")  # 로그아웃 상태에서는 로그인 페이지로 이동
+
+    article = get_object_or_404(Article, pk=pk)
+
+    if article.like_users.filter(pk=request.user.pk).exists():
+        article.like_users.remove(request.user)
+    else:
+        article.like_users.add(request.user)
+
+    return redirect("articles:articles")  # 리스트 페이지로 리디렉트 (좋아요 반영)
 
 
 def delete_image(request, pk):
@@ -31,7 +44,7 @@ def create(request):
             article = form.save(commit=False)  # DB에 저장하지 않고 객체만 생성
             article.author = request.user  # 작성자를 현재 로그인한 유저로 설정
             article = form.save()  # DB에 저장
-            return redirect("articles:article_detail", article.id)
+            return redirect("articles:article_detail", article.pk)
     else:
         form = ArticleForm()
 

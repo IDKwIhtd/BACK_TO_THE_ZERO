@@ -22,3 +22,8 @@ class User(AbstractUser):
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
     )
+    following = models.ManyToManyField(
+        "self",
+        symmetrical=False,  # 대칭적이지 않은 관계(한쪽만 팔로우 가능)
+        related_name="followers",
+    )

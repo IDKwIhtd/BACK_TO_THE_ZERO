@@ -1,0 +1,22 @@
+{% block title %}{{ member.username }}의 프로필 페이지{% endblock title %}
+{% block content %}
+    <h1>{{member.username}}의 프로필 페이지</h1>
+    <div>
+        <h2>username: {{ member.username }}</h2>
+        <p>
+            팔로워 | {{ member.followers.count}}
+            팔로잉 | {{ member.following.count}}
+        </p>
+    </div>
+    <div>
+        <form action="{% url 'accounts:follow' member.pk %}" method="POST">
+            {% csrf_token %}
+            {% if user in member.followers.all %}
+                <input type="submit" value="팔로우 취소">
+            {% else %}
+                <input type="submit" value="팔로우">
+            {% endif %}
+        </form>
+    </div>
+    <a href="/index2/">홈으로 돌아가기</a>"
+{% endblock content %}

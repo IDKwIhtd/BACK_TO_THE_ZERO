@@ -14,6 +14,14 @@
 
 <a href="{% url 'articles:articles' %}">ArticlesPage로 돌아갈래요</a>
 <br>
+<form action="{% url 'accounts:follow' article.author.pk %}" method="POST">
+    {% csrf_token %}
+    {% if request.user in article.author.followers.all %}
+        <input type="submit" value="언팔로우">
+    {% else %}
+        <input type="submit" value="팔로우">
+    {% endif %}
+</form>
 <hr>
 {% if article.author == request.user %}
 <a href="{% url 'articles:update' article.pk %}"><button>수정</button></a>
@@ -27,7 +35,16 @@
 </form>
 {% endif %}
 <hr>
-
+좋아요 수: {{ article.like_users.count }}
+<form action="{% url 'articles:like' article.pk %}" method="POST">
+    {% csrf_token %}
+    {% if request.user in article.like_users.all %}
+        <input type="submit" value="좋아요 취소">
+    {% else %}
+        <input type="submit" value="좋아요">
+    {% endif %}
+</form>
+<hr>
 <h3>댓글 {{ comments.count }}개</h3>
 
 <form action="{% url 'articles:comment_create' article.pk %}" method="POST">

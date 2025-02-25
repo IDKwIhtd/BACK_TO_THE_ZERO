@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordChangeForm,
@@ -9,10 +9,41 @@ from django.contrib.auth import (
     login as auth_login,
     logout as auth_logout,
     update_session_auth_hash,
+    get_user_model,
 )
-from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.http import (
+    require_POST,
+    require_http_methods,
+    require_POST,
+)
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserChangeForm
+
+
+@login_required
+def like(request, pk):
+    if request.user.is_authenticated:
+        article = get_object_or_404(Article, pk=pk)
+        if article.like_users.filter(pk=request.user.pk).exists():
+            article.like_users.remove(request.user)  # 좋아요 취소
+        else:
+            article.like_users.add(request.user)  # 좋아요 추가
+
+        return redirect("articles:article_detail", article_id=article.id)
+    return redirect("accounts:login")
+
+
+@require_POST
+def follow(request, pk):
+    if request.user.is_authenticated:
+        member = get_object_or_404(get_user_model(), pk=pk)
+        if request.user != member:
+            if request.user in member.followers.all():
+                member.followers.remove(request.user)
+            else:
+                member.followers.add(request.user)
+        return redirect("users:profile", member.username)
+    return redirect("accounts:login")
 
 
 @login_required

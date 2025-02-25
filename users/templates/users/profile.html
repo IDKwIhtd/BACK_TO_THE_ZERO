@@ -3,12 +3,24 @@
 {%block title%}PROFILE{%endblock%}
 
 {%block content%}
-<h1> {{username}}'s profile page</h1>
+<h1> {{member.username}}'s profile page</h1>
 
 <div>
-    <p>username: {{username}}</p>
-</div>
+    <p>username: {{member.username}}</p>
 
-<a href="/index/">홈으로 돌아가기</a>
+    {% if request.user != member %}
+
+    <form action="{% url 'users:follow' member.pk %}" method="POST">
+        {% csrf_token %}
+
+        {% if request.user in member.followers.all %}
+            <input type="submit" value="언팔로우">
+        {% else %}
+            <input type="submit" value="팔로우">
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+<a href="/index2/">홈으로 돌아가기</a>
 
 {%endblock content%}
