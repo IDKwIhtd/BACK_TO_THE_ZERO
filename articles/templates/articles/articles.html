@@ -28,7 +28,7 @@
             {% endif %}
         </form>
       {% endif %}  
-      <!-- 좋아요 버튼을 팔로우 버튼 바로 아래로 이동 -->
+      <!-- 좋아요 버튼 : 팔로우 버튼 바로 아래 위치 -->
       {% if request.user.is_authenticated %}
           <form action="{% url 'articles:like' article.pk %}" method="POST" class="like-form">
               {% csrf_token %}

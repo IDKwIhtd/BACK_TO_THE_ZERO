@@ -7,6 +7,12 @@
 
 <div>
     <p>username: {{member.username}}</p>
+    <p>
+        팔로워 {{member.followers.count}} <br>
+        팔로잉 {{member.following.count}}
+    </p>
+</div>
+<div>
 
     {% if request.user != member %}
 
