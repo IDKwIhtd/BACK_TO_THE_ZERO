@@ -32,12 +32,15 @@
       {% if request.user.is_authenticated %}
           <form action="{% url 'articles:like' article.pk %}" method="POST" class="like-form">
               {% csrf_token %}
-              <button type="submit" class="like-button">
+
                   {% if request.user in article.like_users.all %}
-                      💔
+                  <button class="btn btn-link text-danger"><i class="fa-solid fa-heart"></i></button>
+                  
+
                   {% else %}
-                      ❤️
+                  <button class="btn btn-link text-danger"><i class="fa-regular fa-heart"></i></button>
                   {% endif %}
+                 
               </button>
           </form>
           <div id="like-count-{{ article.pk }}">좋아요 수: {{ article.like_count }}</div>
